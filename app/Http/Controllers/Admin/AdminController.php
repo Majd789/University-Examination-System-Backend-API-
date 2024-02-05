@@ -24,8 +24,10 @@ class AdminController extends Controller
                  *This function to show user in DB
                 */
     public function show(Request $request){
-        $user = User::get()->where('email'  , $request->email);
+        $user = User::where('email'  , $request->email)->get();
+        if (!$user->isEmpty())
         return $this->apiResponse($user, 205 , 'get  user in DB');
+        return $this->apiResponse($user, 401 , 'not found user in DB');
 
     }
 
@@ -78,7 +80,13 @@ class AdminController extends Controller
 //        );
         $user = DB::table('users')
             ->where('email',$request->email )
-            ->update(['permission' => $request->permission]);
+            ->update([
+                'name' => $request->name,
+                'permission' => $request->permission,
+                'academic_rank'=>$request->academic_rank,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                ]);
 
         return $this->apiResponse($user , 202 , 'Update is successfly');
 

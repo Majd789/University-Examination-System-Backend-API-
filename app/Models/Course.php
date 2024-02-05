@@ -18,6 +18,6 @@ class Course extends Model
     ];
 
     public function grades (){
-        return $this->hasMany(Grades::class);
+        return $this->hasMany(Grades::class );
     }
 }
