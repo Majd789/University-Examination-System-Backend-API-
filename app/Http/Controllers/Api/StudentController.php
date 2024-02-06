@@ -30,40 +30,59 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $student = Student::insert([
-            'id_student'=>$request->id_student,
-            'first_name'=>$request->first_name,
-            'middle_name'=>$request->middle_name,
-            'last_name'=>$request->last_name,
-            'mother'=>$request->mother,
-            'gender'=>$request->gender,
-            'birth_place'=>$request->birth_place,
-            'birth_date'=>Carbon::parse($request->birth_date),
-            'phone'=>$request->phone,
-            'fidelity_constrain'=>$request->fidelity_constrain,
-            'health_status'=>$request->health_status,
-            'certificate_type'=>$request->certificate_type,
-            'year_join'=>$request->year_join,
-            'status_record'=>$request->status_record,
-            'account_status'=>$request->account_status,
-            'amount'=>$request->amount
 
-        ]);
+        try {
+            $request->validate(
+                [
+                    'id_student'=>'required|unique:Students,id_student|numeric|digits:9',
+                ]);
+            $student = Student::insert([
+                'id_student' => $request->id_student,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'mother' => $request->mother,
+                'gender' => $request->gender,
+                'birth_place' => $request->birth_place,
+                'birth_date' => Carbon::parse($request->birth_date),
+                'phone' => $request->phone,
+                'fidelity_constrain' => $request->fidelity_constrain,
+                'health_status' => $request->health_status,
+                'certificate_type' => $request->certificate_type,
+                'year_join' => $request->year_join,
+                'status_record' => $request->status_record,
+                'account_status' => $request->account_status,
+                'amount' => $request->amount
 
-        return $this->apiResponse($student , 201 , 'insert success');
+            ]);
+
+            return $this->apiResponse($student, 201, 'Done Insert Student successfully');
+        } catch (\Throwable $throwable){
+            return $this->apiResponse(false,401,$throwable->getMessage());
+        }
     }
 
 
 
     public function show(Request $request)
     {
-        $student = Student::find($request->id_student);
-        if ($student) {
+        try {
 
-            return $this->apiResponse($student, 205 , 'ok');
+
+            $request->validate(
+                [
+                    'id_student' => 'required|numeric|digits:9',
+                ]);
+            $student = Student::find($request->id_student);
+            if ($student) {
+
+                return $this->apiResponse($student, 205, 'ok');
+            }
+
+            return $this->apiResponse($student, 402, 'student not found');
+        }catch (\Throwable $throwable){
+            return $this->apiResponse(null, 401, $throwable->getMessage());
         }
-
-        return $this->apiResponse($student , 402 ,'student not found' );
     }
 
 
@@ -111,32 +130,36 @@ class StudentController extends Controller
 
     public function update(Request $request)
     {
-        $student = Student::find($request->id_student);
-        if ($student){
-            $student->update([
-                'id_student'=>$request->id_student,
-                'first_name'=>$request->first_name,
-                'middle_name'=>$request->middle_name,
-                'last_name'=>$request->last_name,
-                'mother'=>$request->mother,
-                'gender'=>$request->gender,
-                'birth_place'=>$request->birth_place,
-                'birth_date'=>Carbon::parse($request->birth_date),
-                'phone'=>$request->phone,
-                'fidelity_constrain'=>$request->fidelity_constrain,
-                'health_status'=>$request->health_status,
-                'certificate_type'=>$request->certificate_type,
-                'year_join'=>$request->year_join,
-                'status_record'=>$request->status_record,
-                'account_status'=>$request->account_status,
-                'amount'=>$request->amount
-            ]);
+        try {
 
-            return $this->apiResponse($student , 202 , 'update success');
+            $student = Student::find($request->id_student);
+            if ($student) {
+                $student->update([
+                    'id_student' => $request->id_student,
+                    'first_name' => $request->first_name,
+                    'middle_name' => $request->middle_name,
+                    'last_name' => $request->last_name,
+                    'mother' => $request->mother,
+                    'gender' => $request->gender,
+                    'birth_place' => $request->birth_place,
+                    'birth_date' => Carbon::parse($request->birth_date),
+                    'phone' => $request->phone,
+                    'fidelity_constrain' => $request->fidelity_constrain,
+                    'health_status' => $request->health_status,
+                    'certificate_type' => $request->certificate_type,
+                    'year_join' => $request->year_join,
+                    'status_record' => $request->status_record,
+                    'account_status' => $request->account_status,
+                    'amount' => $request->amount
+                ]);
 
+                return $this->apiResponse($student, 202, 'update success');
+
+            }
+            return $this->apiResponse($student, 402, 'student not found');
+        }catch (\Throwable $throwable){
+            return $this->apiResponse(false ,401 ,$throwable->getMessage());
         }
-        return $this->apiResponse($student , 402 ,'student not found' );
-
     }
 
 

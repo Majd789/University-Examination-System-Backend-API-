@@ -56,11 +56,11 @@ Route::get('admin/users' , [AdminController::class , 'index']); // show all user
 Route::get('admin/user' , [AdminController::class , 'show']); // show User By email
 Route::post('admin/auth/register' , [AdminController::class , 'createUser']); // Create User
 Route::put('admin/user/update' , [AdminController::class , 'updateUser']);
-Route::post('admin/delete' , [AdminController::class , 'deleteUser']);
+Route::delete('admin/delete' , [AdminController::class , 'deleteUser']);
 Route::get('users/permissions',[AdminController::class,'get_permissions']);
 
 
-// Auth
+// User
 Route::post('auth/login' , [authController::class , 'loginUser']);
 
 

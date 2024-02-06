@@ -41,7 +41,10 @@ class AdminController extends Controller
     public function createUser(Request $request)
     {
         try {
-//                     create user
+            $validation = $request->validate([
+                'password'=>'max:15|min:4' ,
+                'email'=>'unique:users'
+            ]);
             $user = User::create([
                 'name' => $request->name,
                 'permission' => $request->permission,
@@ -51,7 +54,7 @@ class AdminController extends Controller
             ]);
 
             return response()->json([
-                'data' => true,
+                'data' => $user,
                 'msg' => 'create user successfly',
                 'token' => $user->createToken("User Token")->plainTextToken
             ], 201);
@@ -68,28 +71,25 @@ class AdminController extends Controller
                 */
     public function updateUser(Request $request )
     {
-       // $user = User::where('email' , $request->email)->get();
-  //      $user = User::get()->where('email'  , $request->email);
-//        return response()->json([
-//           'data'=>$user
-//        ]);
-//        $user->update(
-//            [
-//                'permission' => $request->permission,
-//            ]
-//        );
-        $user = DB::table('users')
-            ->where('email',$request->email )
-            ->update([
-                'name' => $request->name,
-                'permission' => $request->permission,
-                'academic_rank'=>$request->academic_rank,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+        try {
+            $validation = $request->validate([
+                'password'=>'max:15|min:4'
+
+            ]);
+
+            $user =User::where('email', $request->email)
+                ->update([
+                    'name' => $request->name,
+                    'permission' => $request->permission,
+                    'academic_rank' => $request->academic_rank,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
                 ]);
 
-        return $this->apiResponse($user , 202 , 'Update is successfly');
-
+            return $this->apiResponse($user, 202, 'Update is successfly');
+        } catch (\Throwable $throwable){
+            return $this->apiResponse(false ,401 ,$throwable->getMessage());
+        }
     }
 
                 /*
@@ -97,7 +97,10 @@ class AdminController extends Controller
                 */
     public function deleteUser(Request $request){
         $user = User::find($request->id);
-        $user->delete();
-        return $this->apiResponse(null , 204 , 'delete is successfly');
+        if ($user) {
+            $user->delete();
+            return $this->apiResponse($user, 204, 'delete is successfly');
+        }
+        return $this->apiResponse(null ,401 , 'user not found');
     }
 }
