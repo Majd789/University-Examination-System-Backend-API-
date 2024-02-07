@@ -25,6 +25,18 @@ use Illuminate\Support\Facades\Route;
 //});
 //fj
 
+// Admin
+Route::get('admin/users' , [AdminController::class , 'index']); // show all users
+Route::get('admin/user' , [AdminController::class , 'show']); // show User By email
+Route::post('admin/auth/register' , [AdminController::class , 'createUser']); // Create User
+Route::put('admin/user/update' , [AdminController::class , 'updateUser']);
+Route::delete('admin/delete' , [AdminController::class , 'deleteUser']);
+Route::get('users/permissions',[AdminController::class,'get_permissions']);
+
+// User
+Route::post('auth/login' , [authController::class , 'loginUser']);
+
+
 // student_Route
 Route::get('students',[StudentController::class,'index']);
 Route::get('student/show',[StudentController::class,'show']);
@@ -44,26 +56,6 @@ Route::put('course/update',[CourseController::class,'update']);
 Route::delete('course/delete',[CourseController::class,'destroy']);
 
 
-// Route Mobile
-
-//Route::get('student/info',[MobailController::class,'student_info']); not used has been delete
-Route::get('student/result',[MobailController::class,'student_result']);
-Route::post('student/login',[MobailController::class,'login']);
-
-
-// Admin
-Route::get('admin/users' , [AdminController::class , 'index']); // show all users
-Route::get('admin/user' , [AdminController::class , 'show']); // show User By email
-Route::post('admin/auth/register' , [AdminController::class , 'createUser']); // Create User
-Route::put('admin/user/update' , [AdminController::class , 'updateUser']);
-Route::delete('admin/delete' , [AdminController::class , 'deleteUser']);
-Route::get('users/permissions',[AdminController::class,'get_permissions']);
-
-
-// User
-Route::post('auth/login' , [authController::class , 'loginUser']);
-
-
 //Finances
 Route::get('finance' , [FinanceController::class , 'index']);
 Route::get('finance/student' , [FinanceController::class , 'show']);
@@ -79,8 +71,15 @@ Route::post('grade/insertgrade', [GradesController::class , 'insertgrade']);
 Route::put('grade/updategrade', [GradesController::class , 'updategrade']);
 Route::delete('grade/deletegrade', [GradesController::class , 'deletegrade']);
 Route::get('grades/score/sheet',[GradesController::class , 'score_sheet']);
-
-//  Excel File Import to import grades
-
 Route::post('grade/importexcel', [GradesController::class , 'importExcel']);
+
+
+// Route Mobile
+//Route::get('student/info',[MobailController::class,'student_info']); not used has been delete
+Route::get('student/result',[MobailController::class,'student_result']);
+Route::post('student/login',[MobailController::class,'login']);
+
+
+
+
 
