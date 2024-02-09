@@ -6,3 +6,5 @@ composer update --ignore-platform-reqs
 ||| or manual run in terminal : php artisan generate:key & and manual copy content file .env.example and create file .env and paste that here
 
 Auth : Majd
+
+Edited by Maryam
