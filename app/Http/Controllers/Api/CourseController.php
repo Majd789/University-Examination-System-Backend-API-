@@ -7,13 +7,13 @@ use App\Http\Trait\apiResponseTrait;
 use App\Models\Course;
 use App\Models\Grades;
 use Illuminate\Http\Request;
-
 class CourseController extends Controller
 {
     use apiResponseTrait;
     /**
      * Display a listing of the resource.
      */
+    // test
     public function index()
     {
         $courses = Course::all();
