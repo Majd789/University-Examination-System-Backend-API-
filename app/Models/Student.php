@@ -26,7 +26,6 @@ class Student extends Model
         'certificate_type',
         'year_join',
         'status_record',
-        'account_status',
         'amount',
     ];
     public function finances ()

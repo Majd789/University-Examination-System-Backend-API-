@@ -51,7 +51,6 @@ class StudentController extends Controller
                 'certificate_type' => $request->certificate_type,
                 'year_join' => $request->year_join,
                 'status_record' => $request->status_record,
-                'account_status' => $request->account_status,
                 'amount' => $request->amount
 
             ]);
@@ -149,7 +148,6 @@ class StudentController extends Controller
                     'certificate_type' => $request->certificate_type,
                     'year_join' => $request->year_join,
                     'status_record' => $request->status_record,
-                    'account_status' => $request->account_status,
                     'amount' => $request->amount
                 ]);
 
