@@ -7,6 +7,8 @@ use App\Http\Trait\apiResponseTrait;
 use App\Models\Course;
 use App\Models\Grades;
 use Illuminate\Http\Request;
+use PHPUnit\Event\Code\Throwable;
+
 class CourseController extends Controller
 {
     use apiResponseTrait;
@@ -17,11 +19,6 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::all();
-//        return response()->json([
-//            'data'=>$courses,
-//            'message'=>'ok',
-//            'status'=>200
-//        ]);
         return $this->apiResponse($courses ,205 ,'get all courses');
     }
 
@@ -30,17 +27,21 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-       $course =  Course::insert([
-            'id_course'=>$request->id_course,
-            'name'=>$request->name,
-            'chapter'=>$request->chapter,
-            'year_related'=>$request->year_related
-        ]);
-//        return response()->json([
-//            'message'=>'done Insert course information',
-//            'status'=>200
-//        ]);
-        return $this->apiResponse($course ,201 ,'insert successfully');
+        try {
+            $request->validate([
+                'id_course'=>'required|unique:Students,id_student|numeric'
+            ]);
+            $course = Course::insert([
+                'id_course' => $request->id_course,
+                'name' => $request->name,
+                'chapter' => $request->chapter,
+                'year_related' => $request->year_related
+            ]);
+
+            return $this->apiResponse($course, 201, 'insert successfully');
+        }catch (\Throwable $throwable){
+            return $this->apiResponse(false,401,$throwable->getMessage());
+        }
     }
 
     /**
@@ -83,18 +84,21 @@ class CourseController extends Controller
      */
     public function update(Request $request)
     {
-       $course = Course::find($request->id_course)->update([
-           'id_course'=>$request->id_course,
-           'name'=>$request->name,
-           'chapter'=>$request->chapter,
-           'year_related'=>$request->year_related
-       ]);
+        try {
+            $request->validate([
+               'id_course' =>'required|numeric'
+            ]);
+            $course = Course::find($request->id_course)->update([
+                'id_course' => $request->id_course,
+                'name' => $request->name,
+                'chapter' => $request->chapter,
+                'year_related' => $request->year_related
+            ]);
 
-//        return response()->json([
-//            'message'=>'done update',
-//            'status'=>200
-//        ]);
-        return $this->apiResponse($course  , 202 , 'update successful');
+            return $this->apiResponse($course, 202, 'update successful');
+        }catch (\Throwable $throwable){
+            return $this->apiResponse(false, 401, $throwable->getMessage());
+        }
     }
 
     /**
