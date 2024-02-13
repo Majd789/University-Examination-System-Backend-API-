@@ -78,7 +78,7 @@ class CourseController extends Controller
           return $this->apiResponse($course , 402 , 'course not found');
 
       }
-
+//
     /**
      * Update the specified resource in storage.
      */
