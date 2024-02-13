@@ -24,6 +24,10 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+    public function article ()
+    {
+        return $this->hasMany(article::class,'user_id');
+    }
     //protected $guarded= [];
 
     /**

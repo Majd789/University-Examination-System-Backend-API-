@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\authController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\FinanceController;
@@ -81,5 +82,10 @@ Route::post('student/login',[MobailController::class,'login']);
 
 
 
-
+// Articles
+Route::get('article' ,[ArticleController::class , 'index']);
+Route::get('article/show' ,[ArticleController::class , 'show']);
+Route::post('article/add',[ArticleController::class,'store']);
+Route::put('article/update' ,[ArticleController::class , 'update']);
+Route::delete('article/delete',[ArticleController::class,'destroy']);
 
