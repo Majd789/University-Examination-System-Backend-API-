@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\articleResource;
+use App\Http\Resources\articlesresource;
 use App\Http\Trait\apiResponseTrait;
 use App\Models\Article;
 use App\Models\User;
@@ -20,7 +21,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::all();
-        return $this->apiResponse($articles,  205 , 'These are all the articles');
+        return $this->apiResponse(articlesresource::collection($articles),  205 , 'These are all the articles');
     }
 
 
@@ -63,10 +64,10 @@ class ArticleController extends Controller
 
     public function show(Request $request)
     {
-        $articles = Article::find($request);
-        if ($articles)
+        $article = Article::find($request->id);
+        if ($article)
         {
-            return $this->apiResponse($articles, 205, 'ok');
+            return $this->apiResponse(new articleResource($article), 205, 'ok');
         }
 
         return $this->apiResponse(null, 402, 'article not found');
