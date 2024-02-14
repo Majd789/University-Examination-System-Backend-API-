@@ -16,9 +16,9 @@ class Article extends Model
         'body',
         'image',
     ];
-    public function user(){
+    public function user() {
 
-        return $this->belongsTo(user::class ,'user_id','id_user' );
+        return $this->belongsTo(user::class ,'user_id','id' );
 
     }
 }
