@@ -24,48 +24,181 @@ class GradesController extends Controller
     public function index()
     {
        $grade = Grades::all();
-    //   $grade = $grade->fresh('student','course');
-
        return $this->apiResponse($grade , 205 , 'get all grades ');
 
     }
 
-                    /**
-                     * This Functtion to insert grades
-                     */
-    public function insertgrade(Request $request)
-    {
-        $course = Course::find($request->course_id);
-        $student = Student::find($request->student_id);
 
-        if ($course != null  && $student != null)
-        {
-            $grade = Grades::create([
-                'course_id' => $request->course_id,
-                'student_id' => $request->student_id,
-                'th_grades'  => $request->th_grades,
-                'pr_grades'  => $request->pr_grades,
+//    public function store (Request $request)
+//    {
+//        try {
+//
+//
+//        $request->validate([
+//            "course_id"=>'required|numeric',
+//            "student_id"=>'required|numeric',
+//        ]);
+//        $course = Course::find($request->course_id);
+//        $student = Student::find($request->student_id);
+//
+//        if ($course != null  && $student != null) // التحقق من وجود الطالب والمادة في النظام
+//        {
+//            $GradesExists = Grades::where('student_id', $request->student_id)
+//                ->where('course_id', $request->course_id)
+//                ->exists();
+//
+//
+//            if ($GradesExists) { // التحقق من وجود علامة لهذه المادة متعلقة بهذا الطالب من قبل
+//                // يوجد سجل سابق يحتوي على نفس القيم في العمودين
+//                $LastGrades = Grades::where('student_id', $request->student_id)
+//                    ->where('course_id', $request->course_id)
+//                    ->first();
+//                if ($LastGrades->th_grades != null ) {// تم اضافة علامة نظري
+//                    return $this->apiResponse($LastGrades, 401, 'Already Done Input Grades This Course To this Student');
+//                }else{ // لم تتم اضافة علامة نظري هنا سيتم اضافتها
+//                    $LastGrades->update([
+//                        'th_grades' => $request->th_grades,
+//                    ]);
+//                }
+//            } else {
+//                // لا يوجد سجل سابق يحتوي على نفس القيم في العمودين
+//                // اضافة علامة عملي
+//                $request->validate([
+//                    "pr_grades" =>'lt:30|numeric',
+//                ]);
+//                $grade = Grades::create([
+//                    'course_id' => $request->course_id,
+//                    'student_id' => $request->student_id,
+//                    'th_grades' => $request->th_grades,
+//                    'pr_grades' => $request->pr_grades,
+//                ]);
+//
+//                return $this->apiResponse($grade, 201, 'create success');
+//            }
+//        }
+//        if($course != null && $student == null)
+//        {
+//            return $this->apiResponse(null , 402 , 'student not found');
+//        }
+//        if($course == null && $student != null)
+//        {
+//            return $this->apiResponse(null , 402 , 'course not found');
+//        }
+//        if($course == null && $student == null)
+//        {
+//            return $this->apiResponse(null , 402 , 'student and course not found');
+//        }
+//            }catch (\Throwable $throwable){
+//            return $this->apiResponse(false , 401 , $throwable->getMessage());
+//        }
+//
+//    }
+
+    public function add_pr_grades (Request $request){
+        try {
+
+
+            $request->validate([
+                "course_id"=>'required|numeric',
+                "student_id"=>'required|numeric',
+                "pr_grades" =>'lt:30|numeric',
             ]);
+            $course = Course::find($request->course_id);
+            $student = Student::find($request->student_id);
 
-            return $this->apiResponse($grade , 201 , 'create success');
+            if ($course != null  && $student != null) // التحقق من وجود الطالب والمادة في النظام
+            {
+                $GradesExists = Grades::where('student_id', $request->student_id)
+                    ->where('course_id', $request->course_id)
+                    ->exists();
+                if ($GradesExists) { // التحقق من وجود علامة عملي لهذه المادة متعلقة بهذا الطالب من قبل
+                    // يوجد سجل سابق يحتوي على نفس القيم في العمودين
+                    $LastGrades = Grades::where('student_id', $request->student_id)
+                        ->where('course_id', $request->course_id)
+                        ->first();
+                    return $this->apiResponse($LastGrades, 401, 'Already Done Input pr_grades For this Student');
+                } else {
+                    // لا يوجد سجل سابق يحتوي على نفس القيم في العمودين
+                    // اضافة علامة عملي
+                    $grade = Grades::create([
+                        'course_id' => $request->course_id,
+                        'student_id' => $request->student_id,
+                        'th_grades' => $request->th_grades,
+                        'pr_grades' => $request->pr_grades,
+                    ]);
+
+                    return $this->apiResponse($grade, 201, 'Done Input Pr_Grades success');
+                }
+            }
+            if($course != null && $student == null)
+            {
+                return $this->apiResponse(null , 402 , 'student not found');
+            }
+            if($course == null && $student != null)
+            {
+                return $this->apiResponse(null , 402 , 'course not found');
+            }
+
+                return $this->apiResponse(null , 402 , 'student and course not found');
+
+        }catch (\Throwable $throwable){
+            return $this->apiResponse(false , 401 , $throwable->getMessage());
         }
-        if($course != null && $student == null)
-        {
-            return $this->apiResponse(null , 402 , 'student not found');
+
+    }
+    public function add_th_grades (Request $request){
+        try {
+            $request->validate([
+                "course_id"=>'required|numeric',
+                "student_id"=>'required|numeric',
+                "pr_grades" =>'lt:70|numeric',
+            ]);
+            $course = Course::find($request->course_id);
+            $student = Student::find($request->student_id);
+
+            if ($course != null  && $student != null) // التحقق من وجود الطالب والمادة في النظام
+            {
+                $GradesExists = Grades::where('student_id', $request->student_id)
+                    ->where('course_id', $request->course_id)
+                    ->exists();
+                if ($GradesExists) { // التحقق من وجود علامة لهذه المادة متعلقة بهذا الطالب من قبل
+
+                    $LastGrades = Grades::where('student_id', $request->student_id)
+                        ->where('course_id', $request->course_id)
+                        ->first();
+
+                    if ($LastGrades->th_grades != null ) {  // تمت اضافة علامة نظري مسبقا
+                        return $this->apiResponse($LastGrades, 401, 'Already Done Input Th_Grades For This Student');
+                    }else{  // لم تتم اضافة علامة نظري هنا سيتم اضافتها
+                        $LastGrades->update([
+                            'th_grades' => $request->th_grades,
+                        ]);
+                        return $this->apiResponse($LastGrades, 201, 'Done Input TH_Grades success');
+                    }
+
+
+                } else {
+                    // لا يوجد سجل سابق يحتوي على نفس القيم في العمودين
+                    return $this->apiResponse(false, 401, 'You Must Add Pr_Grades Before Add Th_Grades');
+                }
+            }
+            if($course != null && $student == null)
+            {
+                return $this->apiResponse(null , 402 , 'student not found');
+            }
+            if($course == null && $student != null)
+            {
+                return $this->apiResponse(null , 402 , 'course not found');
+            }
+                return $this->apiResponse(null , 402 , 'student and course not found');
+
+        }catch (\Throwable $throwable){
+            return $this->apiResponse(false , 401 , $throwable->getMessage());
         }
-        if($course == null && $student != null)
-        {
-            return $this->apiResponse(null , 402 , 'course not found');
-        }
-        if($course == null && $student == null)
-        {
-            return $this->apiResponse(null , 402 , 'student and course not found');
-        }
+
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Request $request)
     {
         $grades = Grades::find($request->id);

@@ -84,21 +84,28 @@ class CourseController extends Controller
      */
     public function update(Request $request)
     {
-        try {
-            $request->validate([
-               'id_course' =>'required|numeric'
-            ]);
-            $course = Course::find($request->id_course)->update([
-                'id_course' => $request->id_course,
-                'name' => $request->name,
-                'chapter' => $request->chapter,
-                'year_related' => $request->year_related
-            ]);
+        $course = Course::find($request->id_course);
+        if ($course) {
+            try {
+                $request->validate([
+                    'id_course' => 'required|numeric'
+                ]);
 
-            return $this->apiResponse($course, 202, 'update successful');
-        }catch (\Throwable $throwable){
-            return $this->apiResponse(false, 401, $throwable->getMessage());
+                $course->update([
+                    'id_course' => $request->id_course,
+                    'name' => $request->name,
+                    'chapter' => $request->chapter,
+                    'year_related' => $request->year_related
+                ]);
+                return $this->apiResponse($course, 202, 'update successful');
+
+
+
+            } catch (\Throwable $throwable) {
+                return $this->apiResponse(false, 401, $throwable->getMessage());
+            }
         }
+        return $this->apiResponse($course, 401, 'This Course Not Found');
     }
 
     /**
