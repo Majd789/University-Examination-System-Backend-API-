@@ -7,6 +7,8 @@ use App\Http\Trait\apiResponseTrait;
 use App\Models\Course;
 use App\Models\Grades;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use PHPUnit\Event\Code\Throwable;
 
 class CourseController extends Controller
@@ -28,14 +30,24 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
-                'id_course'=>'required|unique:Students,id_student|numeric'
+            $validator = Validator::make($request->all(), [
+                'id_course'=>'required|unique:Students,id_student|numeric',
+                'mark'=>'required|in:full,fragmented'
             ]);
+
+            if($validator->fails()){
+                return $this->apiResponse(false, 401,$validator->errors() );
+            }
+//            $request->validate([
+//                'id_course'=>'required|unique:Students,id_student|numeric',
+//                'mark'=>['required|',Rule::in(['full','fragmented'])]
+//            ]);
             $course = Course::insert([
                 'id_course' => $request->id_course,
                 'name' => $request->name,
                 'chapter' => $request->chapter,
-                'year_related' => $request->year_related
+                'year_related' => $request->year_related,
+                'mark'=>$request->mark
             ]);
 
             return $this->apiResponse($course, 201, 'insert successfully');
@@ -87,15 +99,24 @@ class CourseController extends Controller
         $course = Course::find($request->id_course);
         if ($course) {
             try {
-                $request->validate([
-                    'id_course' => 'required|numeric'
+//                $request->validate([
+//                    'id_course' => 'required|numeric'
+//                ]);
+                $validator = Validator::make($request->all(), [
+                    'id_course'=>'required|unique:Students,id_student|numeric',
+                    'mark'=>'required|in:full,fragmented'
                 ]);
+
+                if($validator->fails()){
+                    return $this->apiResponse(false, 401,$validator->errors() );
+                }
 
                 $course->update([
                     'id_course' => $request->id_course,
                     'name' => $request->name,
                     'chapter' => $request->chapter,
-                    'year_related' => $request->year_related
+                    'year_related' => $request->year_related,
+                    'mark'=>$request->mark
                 ]);
                 return $this->apiResponse($course, 202, 'update successful');
 

@@ -14,7 +14,8 @@ class Course extends Model
         'id_course',
         'name',
         'chapter',
-        'year_related'
+        'year_related',
+        'mark'
     ];
 
     public function grades (){

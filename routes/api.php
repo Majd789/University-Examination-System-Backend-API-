@@ -73,6 +73,7 @@ Route::post('grade/add/pr_grades', [GradesController::class , 'add_pr_grades']);
 Route::post('grade/add/th_grades', [GradesController::class , 'add_th_grades']); // نظري
 Route::put('grade/updategrade', [GradesController::class , 'updategrade']);
 Route::delete('grade/deletegrade', [GradesController::class , 'deletegrade']);
+// EXCEL
 Route::get('grades/score/sheet',[GradesController::class , 'score_sheet']);
 Route::post('grade/importexcel', [GradesController::class , 'importExcel']);
 

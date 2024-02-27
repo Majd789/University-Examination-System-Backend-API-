@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('chapter');
             $table->string('year_related');
+            $table->string('mark');
             $table->timestamps();
         });
     }
