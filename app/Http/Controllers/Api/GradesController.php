@@ -101,13 +101,13 @@ class GradesController extends Controller
             $request->validate([
                 "course_id"=>'required|numeric',
                 "student_id"=>'required|numeric',
-                "pr_grades" =>'lt:30|numeric',
             ]);
             $course = Course::find($request->course_id);
             $student = Student::find($request->student_id);
 
             if ($course != null  && $student != null) // التحقق من وجود الطالب والمادة في النظام
             {
+               if ($course->mark == 'fragmented') {
                 $GradesExists = Grades::where('student_id', $request->student_id)
                     ->where('course_id', $request->course_id)
                     ->exists();
@@ -120,15 +120,22 @@ class GradesController extends Controller
                 } else {
                     // لا يوجد سجل سابق يحتوي على نفس القيم في العمودين
                     // اضافة علامة عملي
+
+                    $request->validate([
+                        "pr_grades" =>'lt:31|numeric',
+                    ]);
                     $grade = Grades::create([
                         'course_id' => $request->course_id,
                         'student_id' => $request->student_id,
-                        'th_grades' => $request->th_grades,
+                       // 'th_grades' => $request->th_grades,
                         'pr_grades' => $request->pr_grades,
                     ]);
 
                     return $this->apiResponse($grade, 201, 'Done Input Pr_Grades success');
                 }
+            }else{
+                   return $this->apiResponse(false, 401, 'You Can Not ADD Pr Grades For This Course');
+               }
             }
             if($course != null && $student == null)
             {
@@ -151,18 +158,17 @@ class GradesController extends Controller
             $request->validate([
                 "course_id"=>'required|numeric',
                 "student_id"=>'required|numeric',
-                "pr_grades" =>'lt:70|numeric',
             ]);
             $course = Course::find($request->course_id);
             $student = Student::find($request->student_id);
 
             if ($course != null  && $student != null) // التحقق من وجود الطالب والمادة في النظام
             {
+                if ($course->mark == 'fragmented'){
                 $GradesExists = Grades::where('student_id', $request->student_id)
                     ->where('course_id', $request->course_id)
                     ->exists();
                 if ($GradesExists) { // التحقق من وجود علامة لهذه المادة متعلقة بهذا الطالب من قبل
-
                     $LastGrades = Grades::where('student_id', $request->student_id)
                         ->where('course_id', $request->course_id)
                         ->first();
@@ -170,6 +176,9 @@ class GradesController extends Controller
                     if ($LastGrades->th_grades != null ) {  // تمت اضافة علامة نظري مسبقا
                         return $this->apiResponse($LastGrades, 401, 'Already Done Input Th_Grades For This Student');
                     }else{  // لم تتم اضافة علامة نظري هنا سيتم اضافتها
+                        $request->validate([
+                            "th_grades" =>'lt:71|numeric',
+                        ]);
                         $LastGrades->update([
                             'th_grades' => $request->th_grades,
                         ]);
@@ -181,6 +190,33 @@ class GradesController extends Controller
                     // لا يوجد سجل سابق يحتوي على نفس القيم في العمودين
                     return $this->apiResponse(false, 401, 'You Must Add Pr_Grades Before Add Th_Grades');
                 }
+            } else {
+
+                    $GradesExists = Grades::where('student_id', $request->student_id)
+                        ->where('course_id', $request->course_id)
+                        ->exists();
+                    if ($GradesExists) { // التحقق من وجود علامة لهذه المادة متعلقة بهذا الطالب من قبل
+                        $LastGrades = Grades::where('student_id', $request->student_id)
+                            ->where('course_id', $request->course_id)
+                            ->first();
+                            return $this->apiResponse($LastGrades, 401, 'Already Done Input Th_Grades For This Student');
+                        }else{  // لم تتم اضافة علامة نظري هنا سيتم اضافتها
+                            $request->validate([
+                                "th_grades" =>'lt:71|numeric',
+                            ]);
+                        $grade = Grades::create([
+                            'course_id' => $request->course_id,
+                            'student_id' => $request->student_id,
+                            'th_grades' => $request->th_grades,
+                            'pr_grades' => null,
+                        ]);
+
+                        return $this->apiResponse($grade, 201, 'Done Input TH_Grades success');
+                    }
+
+
+                    }
+
             }
             if($course != null && $student == null)
             {

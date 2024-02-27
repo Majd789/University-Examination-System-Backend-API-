@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('course_id')->constrained('courses','id_course')->cascadeOnDelete();
             $table->foreignId('student_id')->constrained('students','id_student')->cascadeOnDelete();
             $table->integer('th_grades')->nullable(); // نظري
-            $table->integer('pr_grades'); // عملي
+            $table->integer('pr_grades')->nullable();; // عملي
             $table->timestamps();
         });
     }
