@@ -11,8 +11,10 @@ class Finance extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id_paid',
         'student_id',
         'amount_paid',
+        'academic_year',
         'date_paid',
         'paid_code'
     ];

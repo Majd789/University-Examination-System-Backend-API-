@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_paid');
             $table->integer('paid_code');
             $table->foreignId('student_id')->constrained('students','id_student')->cascadeOnDelete();
+            $table->string('academic_year');
             $table->integer('amount_paid');
             $table->date('date_paid');
             $table->timestamps();

@@ -64,7 +64,8 @@ class ArticleController extends Controller
 
     public function show(Request $request)
     {
-        $article = Article::find($request->id);
+
+      $article = Article::find($request->id);
         if ($article)
         {
             return $this->apiResponse(new articleResource($article), 205, 'ok');

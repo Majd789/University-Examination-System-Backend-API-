@@ -59,8 +59,8 @@ Route::delete('course/delete',[CourseController::class,'destroy']);
 
 //Finances
 Route::get('finance' , [FinanceController::class , 'index']);
-Route::get('finance/student' , [FinanceController::class , 'show']);
-Route::get('finance/paid/show',[FinanceController::class,'piad_show']);
+Route::get('finance/paid/show',[FinanceController::class,'show']);
+Route::get('finance/student/paid' , [FinanceController::class , 'show_student_paid']);
 Route::post('finance/addpaid' , [FinanceController::class , 'addPaid']);
 Route::post('finance/dipositepaid' , [FinanceController::class , 'dipositepaid']); // diposite
 Route::post('finance/updatepaid' , [FinanceController::class , 'updatepaid']); // update
