@@ -37,14 +37,20 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+        $file_extension = $request -> image -> getClientOriginalExtension();
+        $file_name  = time() . '.' . $file_extension;
+        $path = 'images';
+        $request  -> image -> move ($path , $file_name)  ;
+
+        try
+        {
             $user = User::find($request->user_id);
             if ($user != null) {
                 $articles = Article::insert([
                     'user_id' => $request->user_id,
                     'title' => $request->title,
                     'body' => $request->body,
-                    'image' => $request->image,
+                    'image' => $file_name,
                 ]);
                 return $this->apiResponse($articles, 201, 'create success');
             } else {
@@ -83,15 +89,19 @@ class ArticleController extends Controller
      */
     public function update(Request $request)
     {
+        $file_extension = $request -> image -> getClientOriginalExtension();
+        $file_name  = time() . '.' . $file_extension;
+        $path = 'images';
+        $request  -> image -> move ($path , $file_name)  ;
+
+
         try {
-
-
             $articles = Article::find($request->id);
             $articles->update([
                 'user_id' => $request->user_id,
                 'title' => $request->title,
                 'body'  => $request->body,
-                'image'  => $request->image,
+                'image'  => $request -> image,
             ]);
             return $this->apiResponse($articles  , 202 , 'update successful');
         }
