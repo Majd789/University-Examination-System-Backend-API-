@@ -37,7 +37,7 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        $file_extension = $request -> image -> getClientOriginalExtension();
+        $file_extension = $request -> image ->getClientOriginalExtension();
         $file_name  = time() . '.' . $file_extension;
         $path = 'images';
         $request  -> image -> move ($path , $file_name)  ;
