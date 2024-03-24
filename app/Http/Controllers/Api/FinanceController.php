@@ -33,7 +33,7 @@ class FinanceController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'paid_code' =>'required|numeric' ,
+            'paid_code' =>'required|unique:finances|numeric' ,
             'student_id'=>'required|numeric',
             'academic_year'=> 'regex:/^\d{4}\/\d{4}$/',
             'amount_paid'  =>'required|numeric' ,
@@ -102,14 +102,44 @@ class FinanceController extends Controller
 
     }
 
+
+
+    public function update (Request $request) {
+        $validator = Validator::make($request->all(), [
+            'paid_code' =>'required|numeric' ,
+            'student_id'=>'required|numeric',
+            'academic_year'=> 'regex:/^\d{4}\/\d{4}$/',
+            'amount_paid'  =>'required|numeric' ,
+        ]);
+
+        if ($validator->fails()) {
+            // $errors = $validator->errors();
+            return $this->apiResponse(null , 404 ,$validator->errors() );
+
+        }
+
+        $paid = Finance::find($request->id_paid);
+        if ($paid){
+            $paid->update([
+                'paid_code' => $request->paid_code,
+                'student_id'=>$request->student_id,
+                'academic_year'=>$request->academic_year,
+                'amount_paid'  => $request->amount_paid,
+                'date_paid'=> Carbon::parse($request->date_paid),
+            ]);
+            return $this->apiResponse($paid, '201', 'Done Update Paid successfly');
+        }
+        return $this->apiResponse(null , 402 ,'Paid not found' );
+    }
+
     public function destroy(Request $request)
     {
-        $student_paid = Student :: find ($request ->id_student);
-        $paid = $student_paid->finances()
-            ->delete();
-
-        return $this->apiResponse(null , 204 , 'delete successfully');
-
+        $paid = Finance :: find ($request ->id_paid);
+        if ($paid){
+            $paid->delete();
+            return $this->apiResponse($paid , 204 , 'Done delete paid successfully');
+        }
+        return $this->apiResponse(null , 401 , 'Paid Not Found');
 
     }
 

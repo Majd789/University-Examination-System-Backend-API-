@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Web\Controller;
 use App\Http\Resources\StudentMobailResource;
-use App\Http\Resources\studentResource;
 use App\Http\Trait\apiResponseTrait;
 use App\Models\Course;
 use App\Models\Grades;
@@ -35,6 +34,7 @@ class StudentController extends Controller
             $request->validate(
                 [
                     'id_student'=>'required|unique:Students,id_student|numeric|digits:9',
+                    'year_join'=> 'regex:/^\d{4}\/\d{4}$/',
                 ]);
             $student = Student::insert([
                 'id_student' => $request->id_student,
@@ -49,6 +49,7 @@ class StudentController extends Controller
                 'fidelity_constrain' => $request->fidelity_constrain,
                 'health_status' => $request->health_status,
                 'certificate_type' => $request->certificate_type,
+                'year'=>$request->year,
                 'year_join' => $request->year_join,
                 'status_record' => $request->status_record,
                 'amount' => $request->amount
@@ -146,6 +147,7 @@ class StudentController extends Controller
                     'fidelity_constrain' => $request->fidelity_constrain,
                     'health_status' => $request->health_status,
                     'certificate_type' => $request->certificate_type,
+                    'year'=>$request->year,
                     'year_join' => $request->year_join,
                     'status_record' => $request->status_record,
                     'amount' => $request->amount

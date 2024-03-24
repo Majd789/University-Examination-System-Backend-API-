@@ -58,13 +58,12 @@ Route::delete('course/delete',[CourseController::class,'destroy']);
 
 
 //Finances
-Route::get('finance' , [FinanceController::class , 'index']);
-Route::get('finance/paid/show',[FinanceController::class,'show']);
-Route::get('finance/student/paid' , [FinanceController::class , 'show_student_paid']);
+Route::get('finance' , [FinanceController::class , 'index']); // all
+Route::get('finance/paid/show',[FinanceController::class,'show']); // id paid
+Route::get('finance/student/paid' , [FinanceController::class , 'show_student_paid']); // student_id
 Route::post('finance/addpaid' , [FinanceController::class , 'addPaid']);
-Route::post('finance/dipositepaid' , [FinanceController::class , 'dipositepaid']); // diposite
-Route::post('finance/updatepaid' , [FinanceController::class , 'updatepaid']); // update
-
+Route::post('finance/paid/update' , [FinanceController::class , 'update']); // update
+Route::delete('finance/paid/delete',[FinanceController::class,'destroy']);
 // Grades
 Route::get('grades' , [GradesController::class , 'index']);
 Route::get('grades/show' , [GradesController::class , 'show']);
