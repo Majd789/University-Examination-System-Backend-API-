@@ -24,7 +24,9 @@ return new class extends Migration
             $table->integer('fidelity_constrain');
             $table->string('health_status');
             $table->string('certificate_type');
-            $table->integer('year_join');
+            $table->string('faculty');
+            $table->string('year');
+            $table->string('year_join');
             $table->string('status_record');
             $table->integer('amount');
             $table->timestamps();

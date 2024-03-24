@@ -24,6 +24,8 @@ class Student extends Model
         'fidelity_constrain',
         'health_status',
         'certificate_type',
+        'faculty',
+        'year',
         'year_join',
         'status_record',
         'amount',

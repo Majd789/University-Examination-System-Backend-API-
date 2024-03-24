@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Web\Controller;
 use App\Http\Resources\GradeMobailResource;
 use App\Http\Resources\GradesResource;
-use App\Http\Resources\studentResource;
 use App\Http\Trait\apiResponseTrait;
 use App\Imports\GradeImport;
 use App\Models\Course;
@@ -128,6 +127,7 @@ class GradesController extends Controller
                         'course_id' => $request->course_id,
                         'student_id' => $request->student_id,
                        // 'th_grades' => $request->th_grades,
+                        'academic_year'=>$request->academic_year,
                         'pr_grades' => $request->pr_grades,
                     ]);
 
@@ -180,6 +180,7 @@ class GradesController extends Controller
                             "th_grades" =>'lt:71|numeric',
                         ]);
                         $LastGrades->update([
+                            'academic_year'=>$request->academic_year,
                             'th_grades' => $request->th_grades,
                         ]);
                         return $this->apiResponse($LastGrades, 201, 'Done Input TH_Grades success');
@@ -207,6 +208,7 @@ class GradesController extends Controller
                         $grade = Grades::create([
                             'course_id' => $request->course_id,
                             'student_id' => $request->student_id,
+                            'academic_year'=>$request->academic_year,
                             'th_grades' => $request->th_grades,
                             'pr_grades' => null,
                         ]);
@@ -256,6 +258,7 @@ class GradesController extends Controller
         $grade -> update([
             'course_id' => $request->course_id,
             'student_id' => $request->student_id,
+            'academic_year'=>$request->academic_year,
             'th_grades'  => $request->th_grades,
             'pr_grades'  => $request->pr_grades,
         ]);
