@@ -8,6 +8,7 @@ use App\Http\Trait\apiResponseTrait;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
@@ -36,24 +37,37 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $user = User::find($request->user_id);
-            if ($user != null) {
-                $articles = Article::insert([
-                    'user_id' => $request->user_id,
-                    'title' => $request->title,
-                    'body' => $request->body,
-                    'image' => $request->image,
-                ]);
-                return $this->apiResponse($articles, 201, 'create success');
-            } else {
-                return $this->apiResponse(null, 402, 'user not found ');
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+            'title' => 'required',
+            'body' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-            }
+        if ($validator->fails()) {
+            return $this->apiResponse(null, 404, $validator->errors());
         }
-        catch(\Throwable $throwable )
-        {
-            return $this->apiResponse(false, 401, $throwable -> getMessage());
+
+        if ($request->hasFile('image')) {
+            $file_extension = $request->image->getClientOriginalExtension();
+            $file_name = time() . '.' . $file_extension;
+            $path = 'images';
+            $request->image->move($path, $file_name);
+        }
+
+        $user = User::find($request->user_id);
+
+        if ($user != null) {
+            $article = Article::create([
+                'user_id' => $request->user_id,
+                'title' => $request->title,
+                'body' => $request->body,
+                'image' => $file_name ?? null,
+            ]);
+
+            return $this->apiResponse($article, 201, 'create success');
+        } else {
+            return $this->apiResponse(null, 402, 'user not found');
         }
     }
 
@@ -85,22 +99,33 @@ class ArticleController extends Controller
      */
     public function update(Request $request)
     {
-        try {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric',
+            'title' => 'required',
+            'body' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
+        if ($validator->fails()) {
+            return $this->apiResponse(null, 404, $validator->errors());
+        }
 
-            $articles = Article::find($request->id);
-            $articles->update([
-                'user_id' => $request->user_id,
-                'title' => $request->title,
-                'body'  => $request->body,
-                'image'  => $request->image,
-            ]);
-            return $this->apiResponse($articles  , 202 , 'update successful');
+        if ($request->hasFile('image')) {
+            $file_extension = $request->image->getClientOriginalExtension();
+            $file_name = time() . '.' . $file_extension;
+            $path = 'images';
+            $request->image->move($path, $file_name);
         }
-        catch(\Throwable $throwable )
-        {
-            return $this->apiResponse(false, 401, $throwable -> getMessage());
-        }
+
+        $articles = Article::find($request->id);
+        $articles->update([
+            'user_id' => $request->user_id,
+            'title' => $request->title,
+            'body'  => $request->body,
+            'image'  => $request -> image,
+        ]);
+        return $this->apiResponse($articles  , 202 , 'update successful');
+
     }
 
     /**
