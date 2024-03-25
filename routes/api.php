@@ -70,17 +70,11 @@ Route::get('grades/show' , [GradesController::class , 'show']);
 //Route::post('grade/add', [GradesController::class , 'store']);
 Route::post('grade/add/pr_grades', [GradesController::class , 'add_pr_grades']); // عملي
 Route::post('grade/add/th_grades', [GradesController::class , 'add_th_grades']); // نظري
-Route::put('grade/updategrade', [GradesController::class , 'updategrade']);
-Route::delete('grade/deletegrade', [GradesController::class , 'deletegrade']);
+Route::post('grade/update', [GradesController::class , 'update']);
+Route::delete('grade/delete', [GradesController::class , 'destroy']);
 // EXCEL
 Route::get('grades/score/sheet',[GradesController::class , 'score_sheet']);
 Route::post('grade/importexcel', [GradesController::class , 'importExcel']);
-
-
-// Route Mobile
-//Route::get('student/info',[MobailController::class,'student_info']); not used has been delete
-Route::get('student/result',[MobailController::class,'student_result']);
-Route::post('student/login',[MobailController::class,'login']);
 
 
 
@@ -91,3 +85,8 @@ Route::post('article/add',[ArticleController::class,'store']);
 Route::put('article/update' ,[ArticleController::class , 'update']);
 Route::delete('article/delete',[ArticleController::class,'destroy']);
 
+// Route Mobile
+
+
+Route::post('student/login',[MobailController::class,'login']);
+Route::get('student/grades',[MobailController::class,'grades']);

@@ -26,19 +26,6 @@ class MobailController extends Controller
 //    }
 
 
-
-    public function student_result(Request $request){
-        $result = Student::find($request->id_student);
-        if ($result) {
-            return $this->apiResponse(new StudentMobailResource($result) , 205 , 'ok');
-        }
-
-        return $this->apiResponse(null , 402 ,'student not found' );
-
-    }
-
-
-
     public function login (Request $request)
     {
         $student = Student::find($request->id_student);
@@ -48,4 +35,20 @@ class MobailController extends Controller
         return $this->apiResponse(null , 402 ,'student not found' );
 
     }
+
+
+
+    public function grades (Request $request) {
+        $student = Student::find($request->id_student);
+        if ($student) {
+            return $this->apiResponse(new StudentMobailResource($student) , 205 , 'ok');
+        }
+
+        return $this->apiResponse(null , 402 ,'student not found' );
+
+    }
+
+
+
+
 }

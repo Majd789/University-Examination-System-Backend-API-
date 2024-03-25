@@ -9,6 +9,7 @@ use App\Http\Trait\apiResponseTrait;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
@@ -37,10 +38,13 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+
+
+
         $file_extension = $request -> image ->getClientOriginalExtension();
         $file_name  = time() . '.' . $file_extension;
         $path = 'images';
-        $request  -> image -> move ($path , $file_name)  ;
+        $request  -> image -> move ($path , $file_name);
 
         try
         {

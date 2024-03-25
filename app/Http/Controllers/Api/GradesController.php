@@ -202,9 +202,7 @@ class GradesController extends Controller
                             ->first();
                             return $this->apiResponse($LastGrades, 401, 'Already Done Input Th_Grades For This Student');
                         }else{  // لم تتم اضافة علامة نظري هنا سيتم اضافتها
-                            $request->validate([
-                                "th_grades" =>'lt:71|numeric',
-                            ]);
+
                         $grade = Grades::create([
                             'course_id' => $request->course_id,
                             'student_id' => $request->student_id,
@@ -252,27 +250,35 @@ class GradesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updategrade(Request $request)
+    public function update(Request $request)
     {
         $grade = Grades::find($request->id);
-        $grade -> update([
-            'course_id' => $request->course_id,
-            'student_id' => $request->student_id,
-            'academic_year'=>$request->academic_year,
-            'th_grades'  => $request->th_grades,
-            'pr_grades'  => $request->pr_grades,
-        ]);
-        return $this->apiResponse($grade , 202 , 'update success');
+        if ($grade) {
+            $grade->update([
+                'course_id' => $request->course_id,
+                'student_id' => $request->student_id,
+                'academic_year' => $request->academic_year,
+                'th_grades' => $request->th_grades,
+                'pr_grades' => $request->pr_grades,
+            ]);
+            return $this->apiResponse($grade, 202, 'update success');
+        }
+        return $this->apiResponse($grade, 202, 'Grade Not Found');
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function deletegrade(Request $request)
+    public function destroy(Request $request)
     {
         $grade = Grades::find($request->id);
-        $grade ->delete();
-        return $this->apiResponse($grade ,204 , 'delete success');
+        if ($grade) {
+            $grade->delete();
+            return $this->apiResponse($grade, 204, 'delete success');
+        }
+        return $this->apiResponse(null, 204, 'grade not found');
+
     }
 
     public function importExcel(Request $request ){
