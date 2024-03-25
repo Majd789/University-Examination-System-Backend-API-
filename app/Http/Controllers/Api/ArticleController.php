@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\articleResource;
-use App\Http\Resources\articlesresource;
+
 use App\Http\Trait\apiResponseTrait;
 use App\Models\Article;
 use App\Models\User;
@@ -129,3 +129,4 @@ class ArticleController extends Controller
         return $this->apiResponse($articles , 402 , 'article not found');
     }
 }
+// mmmmm
