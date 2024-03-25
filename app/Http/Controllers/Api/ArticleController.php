@@ -22,34 +22,31 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::all();
-        return $this->apiResponse(articlesresource::collection($articles),  205 , 'These are all the articles');
+        return $this->apiResponse(articleResource::collection($articles),  205 , 'These are all the articles');
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        $user = User::find($request->user_id);
+        if ($user) {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string',
+                'body' => 'required|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
+            if ($validator->fails()) {
+                // $errors = $validator->errors();
+                return $this->apiResponse(null, 402, $validator->errors());
 
+            }
+            if ($request->hasFile('image')) {
+                $file_extension = $request->image->getClientOriginalExtension();
+                $file_name = time() . '.' . $file_extension;  //10/2/2020/101:15.png
+                $path = 'images';
+                $request->image->move($path, $file_name);
 
-        $file_extension = $request -> image ->getClientOriginalExtension();
-        $file_name  = time() . '.' . $file_extension;
-        $path = 'images';
-        $request  -> image -> move ($path , $file_name);
-
-        try
-        {
-            $user = User::find($request->user_id);
-            if ($user != null) {
                 $articles = Article::insert([
                     'user_id' => $request->user_id,
                     'title' => $request->title,
@@ -57,15 +54,18 @@ class ArticleController extends Controller
                     'image' => $file_name,
                 ]);
                 return $this->apiResponse($articles, 201, 'create success');
-            } else {
-                return $this->apiResponse(null, 402, 'user not found ');
-
             }
+            $articles = Article::insert([
+                'user_id' => $request->user_id,
+                'title' => $request->title,
+                'body' => $request->body,
+                'image' => null,
+            ]);
+            return $this->apiResponse($articles, 201, 'create success');
+
         }
-        catch(\Throwable $throwable )
-        {
-            return $this->apiResponse(false, 401, $throwable -> getMessage());
-        }
+        return $this->apiResponse(null, 404, 'User Not Found');
+
     }
 
     /**
@@ -79,6 +79,7 @@ class ArticleController extends Controller
         if ($article)
         {
             return $this->apiResponse(new articleResource($article), 205, 'ok');
+
         }
 
         return $this->apiResponse(null, 402, 'article not found');
@@ -93,26 +94,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request)
     {
-        $file_extension = $request -> image -> getClientOriginalExtension();
-        $file_name  = time() . '.' . $file_extension;
-        $path = 'images';
-        $request  -> image -> move ($path , $file_name)  ;
 
-
-        try {
-            $articles = Article::find($request->id);
-            $articles->update([
-                'user_id' => $request->user_id,
-                'title' => $request->title,
-                'body'  => $request->body,
-                'image'  => $request -> image,
-            ]);
-            return $this->apiResponse($articles  , 202 , 'update successful');
-        }
-        catch(\Throwable $throwable )
-        {
-            return $this->apiResponse(false, 401, $throwable -> getMessage());
-        }
     }
 
     /**
