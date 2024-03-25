@@ -75,10 +75,10 @@ class ArticleController extends Controller
     public function show(Request $request)
     {
 
-      $article = Article::find($request->id);
-        if ($article)
+        $articles = Article::find($request->id);
+        if ($articles)
         {
-            return $this->apiResponse(new articleResource($article), 205, 'ok');
+            return $this->apiResponse(new articleResource($articles), 205, 'ok');
 
         }
 
@@ -94,8 +94,48 @@ class ArticleController extends Controller
      */
     public function update(Request $request)
     {
+        $articles = Article::find($request-> id );
 
-    }
+            if ($articles) {
+                $validator = Validator::make($request->all(), [
+                    'id' => 'required|numeric',
+                    'title' => 'required|string',
+                    'body' => 'required|string',
+                    'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                ]);
+
+                if ($validator->fails()) {
+                    // $errors = $validator->errors();
+                    return $this->apiResponse(null, 402, $validator->errors());
+                }
+
+                if ($request->hasFile('image')) {
+                    $file_extension = $request->image->getClientOriginalExtension();
+                    $file_name = time() . '.' . $file_extension;  //10/2/2020/101:15.png
+                    $path = 'images';
+                    $request->image->move($path, $file_name);
+
+                    $articles->update([
+                        'id' => $request->id,
+                        'user_id' => $request->user_id,
+                        'title' => $request->title,
+                        'body' => $request->body,
+                        'image' => $request->image,
+                    ]);
+                    return $this->apiResponse($articles, 201, 'update successful');
+                }
+
+                $articles->update([
+                    'id' => $request->id,
+                    'user_id' => $request->user_id,
+                    'title' => $request->title,
+                    'body' => $request->body,
+                    'image' =>  null,
+                ]);
+                return $this->apiResponse($articles, 202, 'update successful');
+            }
+            return $this->apiResponse(null, 404, 'articles not found');
+        }
 
     /**
      * Remove the specified resource from storage.
