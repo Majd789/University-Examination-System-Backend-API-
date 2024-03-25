@@ -82,7 +82,7 @@ Route::post('grade/importexcel', [GradesController::class , 'importExcel']);
 Route::get('article' ,[ArticleController::class , 'index']);
 Route::get('article/show' ,[ArticleController::class , 'show']);
 Route::post('article/add',[ArticleController::class,'store']);
-Route::put('article/update' ,[ArticleController::class , 'update']);
+Route::post('article/update' ,[ArticleController::class , 'update']);
 Route::delete('article/delete',[ArticleController::class,'destroy']);
 
 // Route Mobile
