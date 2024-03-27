@@ -94,9 +94,8 @@ class ArticleController extends Controller
      */
     public function update(Request $request)
     {
-        $articles = Article::find($request-> id );
-
-            if ($articles) {
+        $article = Article::find($request->id);
+            if ($article) {
                 $validator = Validator::make($request->all(), [
                     'id' => 'required|numeric',
                     'title' => 'required|string',
@@ -115,24 +114,24 @@ class ArticleController extends Controller
                     $path = 'images';
                     $request->image->move($path, $file_name);
 
-                    $articles->update([
+                    $article->update([
                         'id' => $request->id,
                         'user_id' => $request->user_id,
                         'title' => $request->title,
                         'body' => $request->body,
                         'image' => $request->image,
                     ]);
-                    return $this->apiResponse($articles, 201, 'update successful');
+                    return $this->apiResponse($article, 201, 'update successful');
                 }
 
-                $articles->update([
+                $article->update([
                     'id' => $request->id,
                     'user_id' => $request->user_id,
                     'title' => $request->title,
                     'body' => $request->body,
                     'image' =>  null,
                 ]);
-                return $this->apiResponse($articles, 202, 'update successful');
+                return $this->apiResponse($article, 202, 'update successful');
             }
             return $this->apiResponse(null, 404, 'articles not found');
         }
