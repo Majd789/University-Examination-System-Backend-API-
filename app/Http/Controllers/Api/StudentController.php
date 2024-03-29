@@ -180,29 +180,6 @@ class StudentController extends Controller
         return $this->apiResponse(null , 402 ,'student not found' );
 
     }
-    public function password (Request $request)
-    {
-        $request->validate([
-            'id_student' => 'required|numeric|digits:9',
-            'old_password' => 'required',
-            'new_password' => 'required|min:6',
-            'confirm_password' => 'required|same:new_password',
-        ]);
-
-        $student = Student::find($request->id_student);
-
-        if (!$student) { // اذا كان الطالب غير موجود
-            return $this->apiResponse(null, 402, 'Student not found');
-        }
-
-        if (!Hash::check($request->old_password, $student-> password)) {    // يتم التحقق من كلمة المرور اذا كانت نفس كلمة المرور المخزنة في قاعدة البيانات
-            return $this->apiResponse(null, 401, 'Invalid old password');
-        }
-
-        $student->password = Hash::make($request->new_password);    // اذا كانت كلمة المرور صحيحة
-        $student->save();
-        return $this->apiResponse($student, 200, 'Password changed successfully');
-    }
 
 }
 

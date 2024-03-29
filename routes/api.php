@@ -88,4 +88,4 @@ Route::delete('article/delete',[ArticleController::class,'destroy']);
 
 Route::post('student/login',[MobailController::class,'login']);
 Route::get('student/grades',[MobailController::class,'grades']);
-Route::post('student/password/reset',[StudentController::class,'password']);
+Route::post('student/password/reset',[MobailController::class,'reset_password']);

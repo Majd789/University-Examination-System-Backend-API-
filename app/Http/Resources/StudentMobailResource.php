@@ -17,6 +17,8 @@ class StudentMobailResource extends JsonResource
      */
     public function toArray(Request $request)
     {
+        // pr  عملي
+        // First Will Get Student An Recourd After That Git Finance Paid Then Will Block Dep.. ON Grades Academic_Year
         $academic_year_not_block  = [] ; // هذه المصفوفة ستحتوس على الاعوام الدراسية التي لن تحجب فيها العالامات
         $grades_block = []; // العلامات المحجوبة
         $grades_not_block = []; // العلامات غير المحجوبة
@@ -31,12 +33,14 @@ class StudentMobailResource extends JsonResource
 
 
         foreach ($paids_by_years as $paid_by_year){
-           if ($this->amount * 0.5 <= $paid_by_year->total_amount_paid){
-                $academic_year_not_block [] = $paid_by_year->academic_year;
+           if ($this->amount * 0.5 <= $paid_by_year->total_amount_paid) // Greater Than 50% From Amount IN Academic_Year
+           {
+                $academic_year_not_block [] = $paid_by_year->academic_year; // Academic_year Not Block (Done Paid In 2020/2021)
            }
         }
 
         foreach ($grades as $grade) {
+            // المرور على جميع علامات الطالب وفحص العلامة في اي عام دراسي تم تقديمها اذا قام الطالب بالدفع عن ذلك العام يتم اضافة هذه العلامة الى مصفوفة العلامات غير المحجوبة
             // البحث عن القيمة داخل المصفوفة
             if (in_array($grade->academic_year, $academic_year_not_block)) {
                 $grades_not_block [] = $grade;
