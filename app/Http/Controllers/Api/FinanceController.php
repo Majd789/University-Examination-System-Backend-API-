@@ -61,18 +61,32 @@ class FinanceController extends Controller
               if ($remaining_amount == 0 ){
                   return $this->apiResponse( $remaining_amount , '402', 'The Student Complete Paid For This Academic Year');
               }elseif ($remaining_amount < $request->amount_paid){
-                  return $this->apiResponse($remaining_amount , '402', 'The amount you want to pay is greater than the amount remaining on the student for this Academic Year');
+                  $data = [
+                      'remaining_amount' => $remaining_amount
+                      ];
+                  return $this->apiResponse($data , '402', 'The amount you want to pay is greater than the amount remaining on the student for this Academic Year');
               }
 
                $paid = Finance::create([
-                    // 'id_paid'=>$request->id_paid,
                      'paid_code' => $request->paid_code,
                      'student_id'=>$request->student_id,
                      'academic_year'=>$request->academic_year,
                      'amount_paid'  => $request->amount_paid,
                      'date_paid'=> Carbon::parse($request->date_paid),
+                     'remaining_amount' => $remaining_amount
                  ]);
-                 return $this->apiResponse($paid, '201', 'Done Add Paid insert successfly');
+
+                $data = [
+                    'paid_code' => $paid->paid_code,
+                    'student_id'=>$paid->student_id,
+                    'academic_year'=>$paid->academic_year,
+                    'amount_paid'  => $paid->amount_paid,
+                    'remaining_amount' =>   $remaining_amount - $paid-> amount_paid,
+                    'date_paid'=> $paid->date_paid,
+
+
+                ] ;
+                 return $this->apiResponse($data, '201', 'Done Add Paid insert successfly');
           }
               return $this->apiResponse(null , 402 ,'student not found' );
     }
@@ -93,12 +107,51 @@ class FinanceController extends Controller
     }
 
     public function show_student_paid (Request $request) {
-        $student_paids = Finance::where('student_id' ,$request->student_id)->get();
-        if (!$student_paids->isEmpty()){
-            return $this->apiResponse($student_paids , 201 ,'done');
+
+        $student = Student::find($request->student_id);
+        if ($student){
+
+            $student_paids = Finance::where('student_id', $request->student_id)
+                ->orderBy('academic_year')
+                ->get();
+
+// تجهيز المصفوفة النهائية
+            $result = [];
+
+// تجميع البيانات بحسب العام الدراسي وحساب مجموع amount_paid
+            foreach ($student_paids as $payment) {
+                $academic_year = $payment->academic_year;
+
+                // التحقق مما إذا كانت السنة الدراسية موجودة في المصفوفة النهائية
+                if (!isset($result[$academic_year])) {
+                    $result[$academic_year] = [
+                        'total_amount_paid' => 0, // إعداد المجموع الابتدائي للعام الدراسي
+                        'remaining_amount' => 0 ,
+                        'payments' => [], // قائمة تفاصيل الدفعات المالية
+                    ];
+                }
+
+                // إضافة تفاصيل الدفعة المالية إلى المصفوفة النهائية
+                $result[$academic_year]['payments'][] = [
+                    'id_paid' => $payment->id_paid,
+                    'paid_code' => $payment->paid_code,
+                    'student_id' => $payment->student_id,
+                    'amount_paid' => $payment->amount_paid,
+                    'date_paid' => $payment->date_paid,
+                    'created_at' => $payment->created_at,
+                    'updated_at' => $payment->updated_at,
+                ];
+
+                // إضافة مبلغ الدفعة إلى مجموع العام الدراسي
+                $remaining_amount = $student->amount - ($result[$academic_year]['total_amount_paid'] += $payment->amount_paid );
+                $result[$academic_year]['remaining_amount'] = $remaining_amount;
+            }
+
+            return $this->apiResponse($result , 402 ,'This All Paid For This Student');
 
         }
-        return $this->apiResponse(null , 402 ,'Paid Not Found');
+        return $this->apiResponse(null , 402 ,'Student Not Found');
+
 
     }
 
