@@ -47,6 +47,7 @@ Route::get('student/grades/info',[StudentController::class,'show_grades_info']);
 Route::put('student/update',[StudentController::class,'update']);
 Route::delete('student/delete',[StudentController::class,'destroy']);
 
+
 // Course_Route
 
 Route::get('courses',[CourseController::class,'index']);
@@ -76,8 +77,6 @@ Route::delete('grade/delete', [GradesController::class , 'destroy']);
 Route::get('grades/score/sheet',[GradesController::class , 'score_sheet']);
 Route::post('grade/importexcel', [GradesController::class , 'importExcel']);
 
-
-
 // Articles
 Route::get('article' ,[ArticleController::class , 'index']);
 Route::get('article/show' ,[ArticleController::class , 'show']);
@@ -87,6 +86,6 @@ Route::delete('article/delete',[ArticleController::class,'destroy']);
 
 // Route Mobile
 
-
 Route::post('student/login',[MobailController::class,'login']);
 Route::get('student/grades',[MobailController::class,'grades']);
+Route::post('student/password/reset',[StudentController::class,'password']);

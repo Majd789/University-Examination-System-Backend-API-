@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('year_join');
             $table->string('status_record');
             $table->integer('amount');
+            $table->string('password');
             $table->timestamps();
         });
     }
