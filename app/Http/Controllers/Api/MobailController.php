@@ -62,16 +62,18 @@ class MobailController extends Controller
 
         $student = Student::find($request->id_student);
 
-        if (!$student) { // اذا كان الطالب غير موجود
+        if (!$student) { // إذا كان الطالب غير موجود
             return $this->apiResponse(null, 402, 'Student not found');
         }
-//  يتم التحقق من كلمة المرور اذا كانت نفس كلمة المرور المخزنة في قاعدة البيانات
-        if (!Hash::check($request->password, $student-> password)) {   // حالة عد المطابقة
+
+        // التحقق من تطابق كلمة المرور
+        if ($request->password !== $student->password) {
             return $this->apiResponse(null, 401, 'Invalid old password');
         }
 
-        $student->password = Hash::make($request->new_password);    // اذا كانت كلمة المرور مطابقة يتم تغيرها
+        $student->password = $request->new_password; // تغيير كلمة المرور
         $student->save();
+
         return $this->apiResponse($student, 200, 'Password changed successfully');
     }
 
