@@ -51,7 +51,7 @@ class MobailController extends Controller
 
 
 
-    public function password (Request $request)
+    public function reset_password (Request $request)
     {
         $request->validate([
             'id_student' => 'required|numeric|digits:9',
