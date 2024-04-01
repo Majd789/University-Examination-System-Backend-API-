@@ -68,6 +68,7 @@ Route::delete('finance/paid/delete',[FinanceController::class,'destroy']);
 // Grades
 Route::get('grades' , [GradesController::class , 'index']);
 Route::get('grades/show' , [GradesController::class , 'show']);
+Route::get('grades/show/student' , [GradesController::class , 'grades_student']);
 //Route::post('grade/add', [GradesController::class , 'store']);
 Route::post('grade/add/pr_grades', [GradesController::class , 'add_pr_grades']); // عملي
 Route::post('grade/add/th_grades', [GradesController::class , 'add_th_grades']); // نظري

@@ -16,10 +16,12 @@ class GradeMobailResource extends JsonResource
     {
         return [
             'course_name'=>$this->course->name,
-            'cource_chapter'=>$this->course->chapter,
+            'course_chapter'=>$this->course->chapter,
             'course_year_related'=>$this->course->year_related,
+            'academic_year'=>$this->academic_year,
+            'pr_grade'=>$this->pr_grades,
             'th_grade'=>$this->th_grades,
-            'pr_grade'=>$this->pr_grades
+
         ];
     }
 }

@@ -247,6 +247,21 @@ class GradesController extends Controller
 
     }
 
+
+
+    public function grades_student (Request $request)
+    {
+        $grades = Grades::where('student_id' , $request->student_id)->get();
+
+        if (!$grades->isEmpty()){
+            return $this->apiResponse($grades , 205 , 'ok');
+        }
+        else {
+            return $this->apiResponse(null , 401 , 'not found Grades');
+        }
+
+    }
+
     /**
      * Update the specified resource in storage.
      */

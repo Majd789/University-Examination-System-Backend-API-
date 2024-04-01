@@ -51,7 +51,7 @@ class StudentMobailResource extends JsonResource
 
 
         return [
-            'grades'=>$grades_not_block
+            'grades'=>GradeMobailResource::collection($grades_not_block)
         ];
 
 
