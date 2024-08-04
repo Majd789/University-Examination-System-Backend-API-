@@ -44,7 +44,7 @@ Route::get('student/show',[StudentController::class,'show']);
 Route::post('student/add',[StudentController::class,'store']);
 Route::get('student/finance/info',[StudentController::class,'show_finance_info']);
 Route::get('student/grades/info',[StudentController::class,'show_grades_info']);
-Route::put('student/update',[StudentController::class,'update']);
+Route::post('student/update',[StudentController::class,'update']);
 Route::delete('student/delete',[StudentController::class,'destroy']);
 
 
@@ -54,7 +54,7 @@ Route::get('courses',[CourseController::class,'index']);
 Route::get('course/show',[CourseController::class,'show']);
 Route::get('course/grades/info',[CourseController::class,'show_course_grades']);
 Route::post('course/add',[CourseController::class,'store']);
-Route::put('course/update',[CourseController::class,'update']);
+Route::post('course/update',[CourseController::class,'update']);
 Route::delete('course/delete',[CourseController::class,'destroy']);
 
 

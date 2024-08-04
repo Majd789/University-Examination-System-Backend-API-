@@ -32,7 +32,7 @@ class CourseController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'id_course'=>'required|unique:Students,id_student|numeric',
-                'mark'=>'required|in:full,fragmented'
+                'mark'=>'required|numeric'
             ]);
 
             if($validator->fails()){
@@ -104,7 +104,7 @@ class CourseController extends Controller
 //                ]);
                 $validator = Validator::make($request->all(), [
                     'id_course'=>'required|unique:Students,id_student|numeric',
-                    'mark'=>'required|in:full,fragmented'
+                    'mark'=>'required|numeric'
                 ]);
 
                 if($validator->fails()){
