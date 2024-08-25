@@ -30,10 +30,10 @@ class MobailController extends Controller
     public function login (Request $request)
     {
         $student = Student::find($request->id_student);
-        if ($student){
+        if ($student->password == $request->password){
             return $this->apiResponse($student->id_student , 203 , 'ok');
         }
-        return $this->apiResponse(null , 402 ,'student not found' );
+        return $this->apiResponse(null , 402 ,'الرقم الجامعي او كلمة المرور غير صحيحتان' );
 
     }
 

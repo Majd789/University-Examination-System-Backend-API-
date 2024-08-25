@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Web\Controller;
 use App\Http\Trait\apiResponseTrait;
+use App\Imports\CoursesImport;
+use App\Imports\GradeImport;
 use App\Models\Course;
 use App\Models\Grades;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 use PHPUnit\Event\Code\Throwable;
 
 class CourseController extends Controller
@@ -150,6 +154,18 @@ class CourseController extends Controller
 //            'status'=> 401
 //        ]);
         return $this->apiResponse($course , 402 , 'course not found');
+    }
+
+
+    public function import_courses(Request $request){
+
+        $file = $request->file('file');
+        if (!$file) {
+            return response('لم يتم تحميل أي ملف.');
+        }
+        Log::info('بدء استيراد البيانات.');
+        Excel::import(new CoursesImport, $request->file('file'));
+        return response('تم حفظ البيانات بنجاح ');
     }
 
 }

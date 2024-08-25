@@ -253,17 +253,17 @@ class GradesController extends Controller
     {
         // استرجاع الدرجات بناءً على student_id
         $grades = Grades::where('student_id', $request->student_id)->get();
-        
+
         if (!$grades->isEmpty()) {
             // استرجاع الدورات بناءً على course_id في الدرجات
             $course_ids = $grades->pluck('course_id')->toArray();
             $courses = Course::whereIn('id_course', $course_ids)->get();
-            
+
             // دمج البيانات
             $mergedData = $grades->map(function ($grade) use ($courses) {
                 // العثور على الدورة المناسبة بناءً على course_id
                 $course = $courses->firstWhere('id_course', $grade->course_id);
-                
+
                 // دمج خصائص الدورة مع الدرجة
                 return [
                     'grade_id' => $grade->id,
@@ -278,14 +278,14 @@ class GradesController extends Controller
                     'course_mark' => $course ? $course->mark : 'غير متوفر',
                 ];
             });
-    
+
             // إرسال البيانات المدمجة
             return $this->apiResponse($mergedData, 205, 'ok');
         } else {
             return $this->apiResponse(null, 401, 'not found Grades');
         }
     }
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -332,6 +332,9 @@ class GradesController extends Controller
             return $this->apiResponse(GradesResource::collection($grade) , 205 ,'students not found' );
         }
         return $this->apiResponse(null , 402 ,'students not found' );
+
+    }
+    public function import_Pr_Grades (Request $request){
 
     }
 }

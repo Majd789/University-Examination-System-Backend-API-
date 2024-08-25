@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Web\Controller;
 use App\Http\Resources\StudentMobailResource;
 use App\Http\Trait\apiResponseTrait;
+use App\Imports\CoursesImport;
+use App\Imports\StudentsImport;
 use App\Models\Course;
 use App\Models\Grades;
 use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class StudentController extends Controller
@@ -178,6 +182,18 @@ class StudentController extends Controller
             return $this->apiResponse($student, 204 , 'delete success');
         }
         return $this->apiResponse(null , 402 ,'student not found' );
+
+    }
+
+    public function import_students(Request $request){
+
+        $file = $request->file('file');
+        if (!$file) {
+            return response('لم يتم تحميل أي ملف.');
+        }
+        Log::info('بدء استيراد البيانات.');
+        Excel::import(new StudentsImport, $request->file('file'));
+        return response('تم حفظ البيانات بنجاح ');
 
     }
 

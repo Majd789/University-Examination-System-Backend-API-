@@ -29,6 +29,7 @@ class Student extends Model
         'year_join',
         'status_record',
         'amount',
+        'password'
     ];
     public function finances ()
     {

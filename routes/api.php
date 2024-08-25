@@ -75,8 +75,16 @@ Route::post('grade/add/th_grades', [GradesController::class , 'add_th_grades']);
 Route::post('grade/update', [GradesController::class , 'update']);
 Route::delete('grade/delete', [GradesController::class , 'destroy']);
 // EXCEL
+
 Route::get('grades/score/sheet',[GradesController::class , 'score_sheet']);
+
+
 Route::post('grade/importexcel', [GradesController::class , 'importExcel']);
+
+Route::post('excel/import/pr/grades',[GradesController::class,'import_Pr_Grades']);
+
+Route::post('excel/import/courses',[CourseController::class,'import_courses']); // courses
+Route::post('excel/import/students',[StudentController::class,'import_students']); // Student
 
 // Articles
 Route::get('article' ,[ArticleController::class , 'index']);
