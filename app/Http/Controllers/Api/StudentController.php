@@ -40,7 +40,7 @@ class StudentController extends Controller
         try {
             $request->validate([
                     'id_student'=>'required|unique:Students,id_student|numeric|digits:9',
-                    // 'year_join'=> 'regex:/^\d{4}\/\d{4}$/',
+                     'year_join'=> 'regex:/^\d{4}\/\d{4}$/',
                 ]);
             $student = Student::insert([
                 'id_student' => $request->id_student,

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Course;
 use App\Models\Student;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +29,7 @@ class StudentsImport implements ToModel, WithHeadingRow
 
         if ($existingCourse) {
             // سجل رسالة تنبيه عند وجود سجل مكرر
-            Log::warning("سجل مكرر: ID Course - " . $row['id_course']);
+            Log::warning("سجل مكرر: ID Course - " . $row['id_student']);
             return null;// لا تقم بإدراج السجل المكرر
         }
         return new Student([
@@ -39,7 +40,7 @@ class StudentsImport implements ToModel, WithHeadingRow
             'mother'=> $row['mother'],
             'gender'=> $row['gender'],
             'birth_place'=> $row['birth_place'],
-            'birth_date'=> $row['birth_date'],
+            'birth_date'=> Carbon::parse($row['birth_date']),
             'phone'=> $row['phone'],
             'fidelity_constrain'=> $row['fidelity_constrain'],
             'health_status'=> $row['health_status'],
