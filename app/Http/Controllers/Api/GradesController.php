@@ -249,18 +249,43 @@ class GradesController extends Controller
 
 
 
-    public function grades_student (Request $request)
+    public function grades_student(Request $request)
     {
-        $grades = Grades::where('student_id' , $request->student_id)->get();
-
-        if (!$grades->isEmpty()){
-            return $this->apiResponse($grades , 205 , 'ok');
+        // استرجاع الدرجات بناءً على student_id
+        $grades = Grades::where('student_id', $request->student_id)->get();
+        
+        if (!$grades->isEmpty()) {
+            // استرجاع الدورات بناءً على course_id في الدرجات
+            $course_ids = $grades->pluck('course_id')->toArray();
+            $courses = Course::whereIn('id_course', $course_ids)->get();
+            
+            // دمج البيانات
+            $mergedData = $grades->map(function ($grade) use ($courses) {
+                // العثور على الدورة المناسبة بناءً على course_id
+                $course = $courses->firstWhere('id_course', $grade->course_id);
+                
+                // دمج خصائص الدورة مع الدرجة
+                return [
+                    'grade_id' => $grade->id,
+                    'course_id' => $grade->course_id,
+                    'student_id' => $grade->student_id,
+                    'academic_year' => $grade->academic_year,
+                    'th_grades' => $grade->th_grades,
+                    'pr_grades' => $grade->pr_grades,
+                    'course_name' => $course ? $course->name : 'غير متوفر',
+                    'course_chapter' => $course ? $course->chapter : 'غير متوفر',
+                    'course_year_related' => $course ? $course->year_related : 'غير متوفر',
+                    'course_mark' => $course ? $course->mark : 'غير متوفر',
+                ];
+            });
+    
+            // إرسال البيانات المدمجة
+            return $this->apiResponse($mergedData, 205, 'ok');
+        } else {
+            return $this->apiResponse(null, 401, 'not found Grades');
         }
-        else {
-            return $this->apiResponse(null , 401 , 'not found Grades');
-        }
-
     }
+    
 
     /**
      * Update the specified resource in storage.

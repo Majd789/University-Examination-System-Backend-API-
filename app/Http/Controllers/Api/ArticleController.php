@@ -28,6 +28,7 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
+        $request->user_id = 4;
         $user = User::find($request->user_id);
         if ($user) {
             $validator = Validator::make($request->all(), [
@@ -116,7 +117,7 @@ class ArticleController extends Controller
 
                     $article->update([
                         'id' => $request->id,
-                        'user_id' => $request->user_id,
+                        // 'user_id' => $request->user_id,
                         'title' => $request->title,
                         'body' => $request->body,
                         'image' => $request->image,
@@ -126,7 +127,7 @@ class ArticleController extends Controller
 
                 $article->update([
                     'id' => $request->id,
-                    'user_id' => $request->user_id,
+                    // 'user_id' => $request->user_id,
                     'title' => $request->title,
                     'body' => $request->body,
                     'image' =>  null,
