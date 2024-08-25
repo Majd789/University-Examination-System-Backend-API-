@@ -35,7 +35,7 @@ class FinanceController extends Controller
         $validator = Validator::make($request->all(), [
             'paid_code' =>'required|unique:finances|numeric' ,
             'student_id'=>'required|numeric',
-            // 'academic_year'=> 'regex:/^\d{4}\/\d{4}$/',
+            'academic_year'=> 'regex:/^\d{4}\/\d{4}$/',
             'amount_paid'  =>'required|numeric' ,
         ]);
 
